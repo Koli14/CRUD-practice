@@ -6,7 +6,6 @@ export default {
     const [settlements] = await queryInterface.sequelize.query(
       'SELECT id from Settlements;'
     )
-    console.log(settlements)
 
     await queryInterface.bulkInsert('Partners', [
       {
