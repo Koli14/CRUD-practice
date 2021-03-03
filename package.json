@@ -1,0 +1,23 @@
+{
+  "name": "crud-practice",
+  "version": "1.0.0",
+  "description": "Express, Sequelize and React CRUD practice for job interview",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" ",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Koli14/CRUD-practice.git"
+  },
+  "author": "Karácsony Kolos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Koli14/CRUD-practice/issues"
+  },
+  "homepage": "https://github.com/Koli14/CRUD-practice#readme",
+  "dependencies": {
+    "concurrently": "^6.0.0"
+  }
+}
