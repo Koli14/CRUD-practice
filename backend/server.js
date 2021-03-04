@@ -1,8 +1,8 @@
 import express from 'express'
-import route from './src/routes'
+import route from './app/routes'
 import cors from 'cors'
 import bodyParser from 'body-parser'
-import db from './src/models'
+import db from './app/models'
 
 const app = express()
 app.use(cors())
