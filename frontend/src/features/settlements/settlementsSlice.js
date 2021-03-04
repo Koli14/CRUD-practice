@@ -14,7 +14,6 @@ const settlementsSlice = createSlice({
   reducers: {},
   extraReducers: {
     [fetchSettlements.fulfilled]: (state, action) => {
-      console.log(action)
       return action.payload
     }
   }

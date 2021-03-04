@@ -10,19 +10,48 @@ const PartnerRow = ({ partner }) => {
   const settlement = useSelector((state) =>
     state.settlements.find((settlement) => settlement.id === partner.settlementId)
   )
+  console.log(companyType, settlement)
+  if (companyType && settlement) {
+    return (
+      <tr>
+        <td>{partner.name}</td>
+        <td>{companyType.name}</td>
+        <td>{partner.taxNumber}</td>
+        <td>{partner.companyRegistrationNumber}</td>
+        <td>{settlement.name}</td>
+        <td>{partner.address}</td>
+        <td>{partner.phone}</td>
+        <td>{partner.bankAccount}</td>
+        <td>{partner.comment}</td>
+      </tr>
+    )
+  } else {
+    return <div className='loader'>Loading...</div>
+  }
+}
 
+const PartnerTable = ({ partners }) => {
   return (
-    <tr>
-      <td>{partner.name}</td>
-      <td>{companyType.name}</td>
-      <td>{partner.taxNumber}</td>
-      <td>{partner.companyRegistrationNumber}</td>
-      <td>{settlement.name}</td>
-      <td>{partner.address}</td>
-      <td>{partner.phone}</td>
-      <td>{partner.bankAccount}</td>
-      <td>{partner.comment}</td>
-    </tr>
+    <table>
+      <thead>
+        <tr>
+          <th>Név</th>
+          <th>Cégforma</th>
+          <th>Adószám</th>
+          <th>Cégjegyzékszám</th>
+          <th>Település</th>
+          <th>Cím</th>
+          <th>Telefonszám</th>
+          <th>Bankszámlaszám</th>
+          <th>Megjegyzés</th>
+        </tr>
+      </thead>
+      <tbody>
+        {partners.map(partner =>
+          <PartnerRow key={partner.id} partner={partner} />
+        )}
+      </tbody>
+    </table>
   )
 }
 
@@ -51,30 +80,9 @@ const PartnerList = () => {
 
   return (
     <section className='partners-list'>
-      <h2>Partners</h2>
+      <h2>Partnerek</h2>
       {content}
     </section>
-  )
-}
-
-const PartnerTable = ({ partners }) => {
-  return (
-    <table>
-      <tr>
-        <th>Név</th>
-        <th>Cégforma</th>
-        <th>Adószám</th>
-        <th>Cégjegyzékszám</th>
-        <th>Település</th>
-        <th>Cím</th>
-        <th>Telefonszám</th>
-        <th>Bankszámlaszám</th>
-        <th>Megjegyzés</th>
-      </tr>
-      {partners.map(partner =>
-        <PartnerRow key={partner.id} partner={partner} />
-      )}
-    </table>
   )
 }
 
