@@ -1,12 +1,15 @@
 import express from 'express'
 import route from './src/routes'
-var cors = require('cors')
+import cors from 'cors'
+import bodyParser from 'body-parser'
+import db from './src/models'
 
 const app = express()
 app.use(cors())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
+db.sequelize.sync()
 
 route(app)
 

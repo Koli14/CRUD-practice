@@ -21,12 +21,12 @@ export default {
         }
       },
       taxNumber: {
-        type: Sequelize.STRING,
-        is: /^(\d{7})(\d)-([1-5])-(0[2-9]|[13][0-9]|2[02-9]|4[0-4]|51)$/
+        type: Sequelize.STRING
+        // is: /^(\d{7})(\d)-([1-5])-(0[2-9]|[13][0-9]|2[02-9]|4[0-4]|51)$/
       },
       companyRegistrationNumber: {
-        type: Sequelize.STRING,
-        is: /^(\d{2})-(\d{2})-(\d{6})$/
+        type: Sequelize.STRING
+        // is: /^(\d{2})-(\d{2})-(\d{6})$/
       },
       settlementId: {
         type: Sequelize.INTEGER,
@@ -42,12 +42,12 @@ export default {
         type: Sequelize.STRING
       },
       phone: {
-        type: Sequelize.STRING,
-        is: /^[+\d]?(?:[\d-.\s()]*)$/i
+        type: Sequelize.STRING
+        // is: /^[+\d]?(?:[\d-.\s()]*)$/i
       },
       bankAccount: {
-        type: Sequelize.STRING,
-        is: /^[0-9]{8}([ -]?[0-9]{8}){1,2}$/
+        type: Sequelize.STRING
+        // is: /^[0-9]{8}([ -]?[0-9]{8}){1,2}$/
       },
       comment: {
         type: Sequelize.STRING

@@ -18,21 +18,21 @@ export default (sequelize, DataTypes) => {
       allowNull: false
     },
     taxNumber: {
-      type: DataTypes.STRING,
-      is: /^(\d{7})(\d)-([1-5])-(0[2-9]|[13][0-9]|2[02-9]|4[0-4]|51)$/
+      type: DataTypes.STRING
+      // is: /^(\d{7})(\d)-([1-5])-(0[2-9]|[13][0-9]|2[02-9]|4[0-4]|51)$/
     },
     companyRegistrationNumber: {
-      type: DataTypes.STRING,
-      is: /^(\d{2})-(\d{2})-(\d{6})$/
+      type: DataTypes.STRING
+      // is: /^(\d{2})-(\d{2})-(\d{6})$/
     },
     address: DataTypes.STRING,
     phone: {
-      type: DataTypes.STRING,
-      is: /^[+\d]?(?:[\d-.\s()]*)$/i
+      type: DataTypes.STRING
+      // is: /^[+\d]?(?:[\d-.\s()]*)$/i
     },
     bankAccount: {
-      type: DataTypes.STRING,
-      is: /^[0-9]{8}([ -]?[0-9]{8}){1,2}$/
+      type: DataTypes.STRING
+      // is: /^[0-9]{8}([ -]?[0-9]{8}){1,2}$/
     },
     comment: DataTypes.STRING
   }, {
