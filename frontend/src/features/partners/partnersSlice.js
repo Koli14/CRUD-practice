@@ -15,8 +15,8 @@ export const fetchPartners = createAsyncThunk('partners/fetchPartners', async ()
 export const addNewPartner = createAsyncThunk(
   'partners/addNewPartner',
   async (initialPartner) => {
-    const response = await client.partner('/partners', { partner: initialPartner })
-    return response
+    const response = await client.post('/partners', { ...initialPartner })
+    return { ...response, companyTypeId: Number(response.companyTypeId), settlementId: Number(response.settlementId) }
   }
 )
 
@@ -59,7 +59,7 @@ const partnersSlice = createSlice({
     }
   }
 })
-export const { partnerAdded, partnerUpdated, reactionAdded } = partnersSlice.actions
+export const { partnerAdded, partnerUpdated } = partnersSlice.actions
 
 export default partnersSlice.reducer
 

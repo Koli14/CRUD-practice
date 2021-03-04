@@ -17,6 +17,13 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    companyTypeId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'CompanyTypes',
+        key: 'id'
+      }
+    },
     taxNumber: {
       type: DataTypes.STRING
       // is: /^(\d{7})(\d)-([1-5])-(0[2-9]|[13][0-9]|2[02-9]|4[0-4]|51)$/
@@ -24,6 +31,13 @@ export default (sequelize, DataTypes) => {
     companyRegistrationNumber: {
       type: DataTypes.STRING
       // is: /^(\d{2})-(\d{2})-(\d{6})$/
+    },
+    settlementId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Settlements',
+        key: 'id'
+      }
     },
     address: DataTypes.STRING,
     phone: {

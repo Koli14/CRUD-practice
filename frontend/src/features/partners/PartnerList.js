@@ -27,7 +27,7 @@ const PartnerRow = ({ partner }) => {
       </tr>
     )
   } else {
-    return <div className='loader'>Loading...</div>
+    return <tr className='loader'><td>Loading...</td></tr>
   }
 }
 
