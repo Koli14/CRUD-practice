@@ -1,8 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
-import counterReducer from '../features/counter/counterSlice'
+import partnerReducer from '../features/partners/partnersSlice'
+import companyTypesReducer from '../features/companyTypes/companyTypesSlice'
+import settlementsReducer from '../features/settlements/settlementsSlice'
 
 export default configureStore({
   reducer: {
-    counter: counterReducer
+    partners: partnerReducer,
+    companyTypes: companyTypesReducer,
+    settlements: settlementsReducer
   }
 })

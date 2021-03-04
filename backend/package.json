@@ -19,6 +19,7 @@
     "@babel/node": "^7.13.0",
     "@babel/preset-env": "^7.13.8",
     "@babel/register": "^7.13.8",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-sequelize-crud": "^6.1.5",
     "sequelize": "^6.5.0",

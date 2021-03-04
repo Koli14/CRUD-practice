@@ -17,7 +17,7 @@ export default {
         address: 'Árpád fejedelem útja 35.',
         phone: '+36-77-864-7749',
         bankAccount: '1318643531600939',
-        comment: 'Voluptate ipsum proident quis ullamco proident et duis incididunt consectetur. Mollit nulla et velit officia cupidatat cillum qui dolor consequat non excepteur reprehenderit. Anim commodo ea id Lorem.',
+        comment: 'Voluptate ipsum proident.',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -43,7 +43,7 @@ export default {
         address: 'Apáczai Csere János u.',
         phone: '+36-43-924-5961',
         bankAccount: '84469727-7193767500647767',
-        comment: 'Anim sint nostrud quis eiusmod. Eu adipisicing pariatur amet sit. Culpa elit incididunt labore deserunt. Amet id officia voluptate tempor ullamco irure voluptate laborum dolor sit labore.',
+        comment: 'Anim sint nostrud quis eiusmod.',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -82,7 +82,7 @@ export default {
         address: 'Izabella u. 84.',
         phone: '+36-35-387-3548',
         bankAccount: '8041817966194108',
-        comment: 'Non mollit sunt qui amet enim. Dolor laboris et sit labore do. In quis anim dolor do commodo anim.',
+        comment: 'Non mollit sunt qui amet enim.',
         createdAt: new Date(),
         updatedAt: new Date()
       },
@@ -95,7 +95,7 @@ export default {
         address: 'Erzsébet krt. 39.',
         phone: '+36-34-626-7337',
         bankAccount: '5921484785233055-64799375',
-        comment: 'Voluptate eu irure dolore esse. Aute excepteur velit mollit et consequat excepteur aliqua veniam eiusmod. Esse magna velit do ad ipsum.',
+        comment: 'Voluptate eu irure dolore esse.',
         createdAt: new Date(),
         updatedAt: new Date()
       }

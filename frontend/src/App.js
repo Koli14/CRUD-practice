@@ -1,5 +1,6 @@
 import React from 'react'
 import logo from './logo.png'
+import PartnerList from './features/partners/PartnerList'
 import './App.css'
 
 function App () {
@@ -7,10 +8,13 @@ function App () {
     <div className='App'>
       <header className='App-header'>
         <img src={logo} className='App-logo' alt='logo' />
-        <h1>
+        <div>
           Partner nyilvántartó rendszer
-        </h1>
+        </div>
       </header>
+      <main>
+        <PartnerList />
+      </main>
     </div>
   )
 }
