@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectAllPartners, fetchPartners } from './partnersSlice'
 import './PartnerList.css'
+import AddPartnerModal from './AddPartnerModal'
 
 const PartnerRow = ({ partner }) => {
   const companyType = useSelector((state) =>
@@ -10,7 +11,7 @@ const PartnerRow = ({ partner }) => {
   const settlement = useSelector((state) =>
     state.settlements.find((settlement) => settlement.id === partner.settlementId)
   )
-  console.log(companyType, settlement)
+
   if (companyType && settlement) {
     return (
       <tr>
@@ -58,30 +59,34 @@ const PartnerTable = ({ partners }) => {
 const PartnerList = () => {
   const dispatch = useDispatch()
   const partners = useSelector(selectAllPartners)
-
   const partnerStatus = useSelector(state => state.partners.status)
   const error = useSelector((state) => state.partners.error)
-
   useEffect(() => {
     if (partnerStatus === 'idle') {
       dispatch(fetchPartners())
     }
   }, [partnerStatus, dispatch])
 
-  let content
+  let table
 
   if (partnerStatus === 'loading') {
-    content = <div className='loader'>Loading...</div>
+    table = <div className='loader'>Loading...</div>
   } else if (partnerStatus === 'succeeded') {
-    content = <PartnerTable partners={partners} />
+    table = <PartnerTable partners={partners} />
   } else if (partnerStatus === 'error') {
-    content = <div>{error}</div>
+    table = <div>{error}</div>
   }
+
+  const [modalIsOpen, setIsOpen] = React.useState(false)
 
   return (
     <section className='partners-list'>
-      <h2>Partnerek</h2>
-      {content}
+      <div>
+        <h2>Partnerek</h2>
+        <button onClick={() => setIsOpen(true)}>Új Partner létrehozása</button>
+      </div>
+      {table}
+      <AddPartnerModal isOpen={modalIsOpen} onRequestClose={() => setIsOpen(false)} />
     </section>
   )
 }
