@@ -2,11 +2,11 @@ import Modal from 'react-modal'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit'
-import Select from 'react-select'
+import CreatableSelect from 'react-select/creatable'
 
 import './AddPartnerModal.css'
 import { addNewPartner } from './partnersSlice'
-import { selectAllCompanyTypes } from '../companyTypes/companyTypesSlice'
+import { selectAllCompanyTypesOptions, addNewCompanyType } from '../companyTypes/companyTypesSlice'
 import { selectAllSettlements } from '../settlements/settlementsSlice'
 
 const initialPartner = {
@@ -22,11 +22,31 @@ const initialPartner = {
 }
 const AddPartnerModal = ({ isOpen, onRequestClose }) => {
   Modal.setAppElement('#root')
+  const dispatch = useDispatch()
   const [partner, setPartner] = useState(initialPartner)
   const [addRequestStatus, setAddRequestStatus] = useState('idle')
-  const dispatch = useDispatch()
-  const companyTypes = useSelector(selectAllCompanyTypes)
+
+  const [selectedCompanyType, setSelectedCompanyType] = useState()
+  const companyTypesOptions = useSelector(selectAllCompanyTypesOptions)
+  const [isLoadingCompanyTypes, setIsLoadingCompanyTypes] = useState(false)
+  const handleCompanyTypeCreate = async (input) => {
+    setIsLoadingCompanyTypes(true)
+    try {
+      const resultAction = await dispatch(addNewCompanyType(input))
+      const newCompanyType = unwrapResult(resultAction)
+      setSelectedCompanyType({ value: newCompanyType.id, label: newCompanyType.name })
+      setPartner({ ...partner, companyTypeId: newCompanyType.id })
+    } catch (err) {
+      console.error('Failed to save the CompanyType: ', err)
+    } finally {
+      setIsLoadingCompanyTypes(false)
+    }
+  }
+
   const settlements = useSelector(selectAllSettlements)
+  const settlementsOptions = settlements.map((settlement) => (
+    { value: settlement.id, label: settlement.name }
+  ))
 
   const canSave =
     [partner.name, partner.settlementId].every(Boolean) && addRequestStatus === 'idle'
@@ -35,11 +55,10 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
     if (canSave) {
       try {
         setAddRequestStatus('pending')
-        const resultAction = await dispatch(
-          addNewPartner(partner)
-        )
+        const resultAction = await dispatch(addNewPartner(partner))
         unwrapResult(resultAction)
         setPartner(initialPartner)
+        setSelectedCompanyType()
         onRequestClose()
       } catch (err) {
         console.error('Failed to save the partner: ', err)
@@ -48,16 +67,6 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
       }
     }
   }
-
-  const companyTypesOptions = companyTypes.map((companyType) => (
-    { value: companyType.id, label: companyType.name }
-  ))
-
-  const settlementsOptions = settlements.map((settlement) => (
-    <option key={settlement.id} value={settlement.id}>
-      {settlement.name}
-    </option>
-  ))
 
   return (
     <Modal
@@ -80,9 +89,14 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
 
         <div>
           <label htmlFor='companyType'>Cégforma:</label>
-          <Select
+          <CreatableSelect
+            isClearable
+            isDisabled={isLoadingCompanyTypes}
+            isLoading={isLoadingCompanyTypes}
             onChange={selected => setPartner({ ...partner, companyTypeId: selected.value })}
+            onCreateOption={handleCompanyTypeCreate}
             options={companyTypesOptions}
+            value={selectedCompanyType}
           />
         </div>
 
@@ -110,14 +124,11 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
 
         <div>
           <label htmlFor='settlement'>Település:</label>
-          <select
-            id='settlement'
-            value={partner.settlementId}
-            onChange={e => setPartner({ ...partner, settlementId: e.target.value })}
-          >
-            <option value='' />
-            {settlementsOptions}
-          </select>
+          <CreatableSelect
+            isClearable
+            onChange={selected => setPartner({ ...partner, settlementId: selected.value })}
+            options={settlementsOptions}
+          />
         </div>
 
         <div>

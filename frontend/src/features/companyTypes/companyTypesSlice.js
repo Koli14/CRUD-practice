@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createEntityAdapter, createSelector } from '@reduxjs/toolkit'
 import { client } from '../../api/client'
 
 const companyTypesAdapter = createEntityAdapter()
@@ -10,12 +10,21 @@ export const fetchCompanyTypes = createAsyncThunk('companyTypes/fetchCompanyType
   return response
 })
 
+export const addNewCompanyType = createAsyncThunk(
+  'companyTypes/addNewCompanyType',
+  async (newCompanyType) => {
+    const response = await client.post('/companyTypes', { name: newCompanyType })
+    return { ...response }
+  }
+)
+
 const companyTypesSlice = createSlice({
   name: 'companyTypes',
   initialState,
   reducers: {},
   extraReducers: {
-    [fetchCompanyTypes.fulfilled]: companyTypesAdapter.setAll
+    [fetchCompanyTypes.fulfilled]: companyTypesAdapter.setAll,
+    [addNewCompanyType.fulfilled]: companyTypesAdapter.addOne
   }
 })
 
@@ -25,3 +34,10 @@ export const {
   selectAll: selectAllCompanyTypes,
   selectById: selectCompanyTypeById
 } = companyTypesAdapter.getSelectors(state => state.companyTypes)
+
+export const selectAllCompanyTypesOptions = createSelector(
+  [selectAllCompanyTypes],
+  (companyTypes) => companyTypes.map((companyType) => (
+    { value: companyType.id, label: companyType.name }
+  ))
+)
