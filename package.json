@@ -4,6 +4,7 @@
   "description": "Express, Sequelize and React CRUD practice for job interview",
   "main": "index.js",
   "scripts": {
+    "postinstall": "cd backend && npm i && npx sequelize-cli db:migrate && cd ../frontend && npm i && cd ..",
     "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
