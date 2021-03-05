@@ -37,6 +37,7 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
         )
         unwrapResult(resultAction)
         setPartner(initialPartner)
+        onRequestClose()
       } catch (err) {
         console.error('Failed to save the partner: ', err)
       } finally {

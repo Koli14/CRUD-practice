@@ -1,11 +1,12 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit'
 import { client } from '../../api/client'
 
-const initialState = {
-  partners: [],
+const partnersAdapter = createEntityAdapter()
+
+const initialState = partnersAdapter.getInitialState({
   status: 'idle',
   error: null
-}
+})
 
 export const fetchPartners = createAsyncThunk('partners/fetchPartners', async () => {
   const response = await client.get('/partners')
@@ -48,22 +49,21 @@ const partnersSlice = createSlice({
     [fetchPartners.fulfilled]: (state, action) => {
       state.status = 'succeeded'
       // Add any fetched partners to the array
-      state.partners = state.partners.concat(action.payload)
+      partnersAdapter.upsertMany(state, action.payload)
     },
     [fetchPartners.rejected]: (state, action) => {
       state.status = 'failed'
       state.error = action.error.message
     },
-    [addNewPartner.fulfilled]: (state, action) => {
-      state.partners.push(action.payload)
-    }
+    [addNewPartner.fulfilled]: partnersAdapter.addOne
   }
 })
 export const { partnerAdded, partnerUpdated } = partnersSlice.actions
 
 export default partnersSlice.reducer
 
-export const selectAllPartners = (state) => state.partners.partners
-
-export const selectPartnerById = (state, partnerId) =>
-  state.partners.partners.find((partner) => partner.id === partnerId)
+export const {
+  selectAll: selectAllPartners,
+  selectById: selectPartnerById,
+  selectIds: selectPartnerIds
+} = partnersAdapter.getSelectors(state => state.partners)

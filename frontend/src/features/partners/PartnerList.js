@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { selectAllPartners, fetchPartners } from './partnersSlice'
+import { fetchPartners, selectPartnerIds, selectPartnerById } from './partnersSlice'
 import './PartnerList.css'
 import AddPartnerModal from './AddPartnerModal'
 
-const PartnerRow = ({ partner }) => {
+const PartnerRow = ({ partnerId }) => {
+  const partner = useSelector(state => selectPartnerById(state, partnerId))
   const companyType = useSelector((state) =>
     state.companyTypes.find((companyType) => companyType.id === partner.companyTypeId)
   )
@@ -31,7 +32,7 @@ const PartnerRow = ({ partner }) => {
   }
 }
 
-const PartnerTable = ({ partners }) => {
+const PartnerTable = ({ partnerIds }) => {
   return (
     <table>
       <thead>
@@ -48,8 +49,8 @@ const PartnerTable = ({ partners }) => {
         </tr>
       </thead>
       <tbody>
-        {partners.map(partner =>
-          <PartnerRow key={partner.id} partner={partner} />
+        {partnerIds.map(partnerId =>
+          <PartnerRow key={partnerId} partnerId={partnerId} />
         )}
       </tbody>
     </table>
@@ -58,7 +59,7 @@ const PartnerTable = ({ partners }) => {
 
 const PartnerList = () => {
   const dispatch = useDispatch()
-  const partners = useSelector(selectAllPartners)
+  const partnerIds = useSelector(selectPartnerIds)
   const partnerStatus = useSelector(state => state.partners.status)
   const error = useSelector((state) => state.partners.error)
   useEffect(() => {
@@ -72,7 +73,7 @@ const PartnerList = () => {
   if (partnerStatus === 'loading') {
     table = <div className='loader'>Loading...</div>
   } else if (partnerStatus === 'succeeded') {
-    table = <PartnerTable partners={partners} />
+    table = <PartnerTable partnerIds={partnerIds} />
   } else if (partnerStatus === 'error') {
     table = <div>{error}</div>
   }
