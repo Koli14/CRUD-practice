@@ -5,28 +5,18 @@ import { unwrapResult } from '@reduxjs/toolkit'
 import CreatableSelect from 'react-select/creatable'
 
 import './Modal.css'
-import { addNewPartner } from './partnersSlice'
+import { updatePartner, selectPartnerById } from './partnersSlice'
 import { selectAllCompanyTypesOptions, addNewCompanyType } from '../companyTypes/companyTypesSlice'
 import { selectAllSettlementsOptions, addNewSettlement } from '../settlements/settlementsSlice'
 
-const initialPartner = {
-  name: '',
-  companyTypeId: '',
-  taxNumber: '',
-  companyRegistrationNumber: '',
-  settlementId: '',
-  address: '',
-  phone: '',
-  bankAccount: '',
-  comment: ''
-}
-const AddPartnerModal = ({ isOpen, onRequestClose }) => {
+const UpdatePartnerModal = ({ isOpen, onRequestClose, partnerId }) => {
   Modal.setAppElement('#root')
   const dispatch = useDispatch()
-  const [partner, setPartner] = useState(initialPartner)
-  const [addRequestStatus, setAddRequestStatus] = useState('idle')
+  const initialPartner = useSelector(state => selectPartnerById(state, partnerId))
 
-  const [selectedCompanyType, setSelectedCompanyType] = useState()
+  const [partner, setPartner] = useState(initialPartner)
+  const [updateRequestStatus, setUpdateRequestStatus] = useState('idle')
+
   const companyTypesOptions = useSelector(selectAllCompanyTypesOptions)
   const [isLoadingCompanyTypes, setIsLoadingCompanyTypes] = useState(false)
   const handleCompanyTypeCreate = async (input) => {
@@ -34,7 +24,6 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
     try {
       const resultAction = await dispatch(addNewCompanyType(input))
       const newCompanyType = unwrapResult(resultAction)
-      setSelectedCompanyType({ value: newCompanyType.id, label: newCompanyType.name })
       setPartner({ ...partner, companyTypeId: newCompanyType.id })
     } catch (err) {
       console.error('Failed to save the CompanyType: ', err)
@@ -43,7 +32,6 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
     }
   }
 
-  const [selectedSettlement, setSelectedSettlement] = useState()
   const settlementsOptions = useSelector(selectAllSettlementsOptions)
   const [isLoadingSettlements, setIsLoadingSettlements] = useState(false)
   const handleSettlementCreate = async (input) => {
@@ -51,7 +39,6 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
     try {
       const resultAction = await dispatch(addNewSettlement(input))
       const newSettlement = unwrapResult(resultAction)
-      setSelectedSettlement({ value: newSettlement.id, label: newSettlement.name })
       setPartner({ ...partner, settlementId: newSettlement.id })
     } catch (err) {
       console.error('Failed to save the Settlement: ', err)
@@ -61,22 +48,18 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
   }
 
   const canSave =
-    [partner.name, partner.settlementId].every(Boolean) && addRequestStatus === 'idle'
+    [partner.name, partner.settlementId].every(Boolean) && updateRequestStatus === 'idle'
 
   const onSavePartnerClicked = async () => {
     if (canSave) {
       try {
-        setAddRequestStatus('pending')
-        const resultAction = await dispatch(addNewPartner(partner))
-        unwrapResult(resultAction)
-        setPartner(initialPartner)
-        setSelectedCompanyType()
-        setSelectedSettlement()
+        setUpdateRequestStatus('pending')
+        await dispatch(updatePartner(partner))
         onRequestClose()
       } catch (err) {
         console.error('Failed to save the partner: ', err)
       } finally {
-        setAddRequestStatus('idle')
+        setUpdateRequestStatus('idle')
       }
     }
   }
@@ -108,7 +91,14 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
             onChange={selected => setPartner({ ...partner, companyTypeId: selected.value })}
             onCreateOption={handleCompanyTypeCreate}
             options={companyTypesOptions}
-            value={selectedCompanyType}
+            value={
+              partner.companyTypeId
+                ? {
+                    value: partner.companyTypeId,
+                    label: companyTypesOptions.find(o => o.value === partner.companyTypeId).label
+                  }
+                : ''
+            }
           />
         </div>
 
@@ -142,7 +132,14 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
             onChange={selected => setPartner({ ...partner, settlementId: selected.value })}
             onCreateOption={handleSettlementCreate}
             options={settlementsOptions}
-            value={selectedSettlement}
+            value={
+              partner.settlementId
+                ? {
+                    value: partner.settlementId,
+                    label: settlementsOptions.find(o => o.value === partner.settlementId).label
+                  }
+                : ''
+            }
           />
         </div>
 
@@ -212,4 +209,4 @@ const customStyles = {
   }
 }
 
-export default AddPartnerModal
+export default UpdatePartnerModal

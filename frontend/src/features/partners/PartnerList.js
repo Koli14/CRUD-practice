@@ -5,6 +5,7 @@ import { selectCompanyTypeById } from '../companyTypes/companyTypesSlice'
 import { selectSettlementById } from '../settlements/settlementsSlice'
 import './PartnerList.css'
 import AddPartnerModal from './AddPartnerModal'
+import UpdatePartnerModal from './UpdatePartnerModal'
 import { unwrapResult } from '@reduxjs/toolkit'
 
 const PartnerRow = ({ partnerId }) => {
@@ -15,6 +16,7 @@ const PartnerRow = ({ partnerId }) => {
   const settlement = useSelector(state => selectSettlementById(state, partner.settlementId)
   )
   const [deleteRequestStatus, setDeleteRequestStatus] = useState('idle')
+  const [modalIsOpen, setIsOpen] = useState(false)
 
   const onDeleteClicked = async () => {
     if (deleteRequestStatus === 'idle') {
@@ -41,7 +43,15 @@ const PartnerRow = ({ partnerId }) => {
       <td>{partner.phone}</td>
       <td>{partner.bankAccount}</td>
       <td>{partner.comment}</td>
-      <td> <button onClick={onDeleteClicked} disabled={deleteRequestStatus !== 'idle'}>Törlés</button></td>
+      <td>
+        <button onClick={() => setIsOpen(true)}>Szerkesztés</button>
+        <UpdatePartnerModal isOpen={modalIsOpen} onRequestClose={() => setIsOpen(false)} partnerId={partnerId} />
+      </td>
+      <td>
+        <button onClick={onDeleteClicked} disabled={deleteRequestStatus !== 'idle'}>
+          Törlés
+        </button>
+      </td>
     </tr>
   )
 }
@@ -60,6 +70,7 @@ const PartnerTable = ({ partnerIds }) => {
           <th>Telefonszám</th>
           <th>Bankszámlaszám</th>
           <th>Megjegyzés</th>
+          <th>Szerkesztés</th>
           <th>Törlés</th>
         </tr>
       </thead>
@@ -73,10 +84,13 @@ const PartnerTable = ({ partnerIds }) => {
 }
 
 const PartnerList = () => {
+  const [modalIsOpen, setIsOpen] = useState(false)
+
   const dispatch = useDispatch()
   const partnerIds = useSelector(selectPartnerIds)
   const partnerStatus = useSelector(state => state.partners.status)
   const error = useSelector((state) => state.partners.error)
+
   useEffect(() => {
     if (partnerStatus === 'idle') {
       dispatch(fetchPartners())
@@ -92,8 +106,6 @@ const PartnerList = () => {
   } else if (partnerStatus === 'error') {
     table = <div>{error}</div>
   }
-
-  const [modalIsOpen, setIsOpen] = React.useState(false)
 
   return (
     <section className='partners-list'>
