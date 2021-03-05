@@ -2,6 +2,7 @@ import Modal from 'react-modal'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit'
+import Select from 'react-select'
 
 import './AddPartnerModal.css'
 import { addNewPartner } from './partnersSlice'
@@ -49,9 +50,7 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
   }
 
   const companyTypesOptions = companyTypes.map((companyType) => (
-    <option key={companyType.id} value={companyType.id}>
-      {companyType.name}
-    </option>
+    { value: companyType.id, label: companyType.name }
   ))
 
   const settlementsOptions = settlements.map((settlement) => (
@@ -61,7 +60,12 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
   ))
 
   return (
-    <Modal isOpen={isOpen} onRequestClose={onRequestClose} style={customStyles} contentLabel='Add Partner Modal'>
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      style={customStyles}
+      contentLabel='Add Partner Modal'
+    >
       <form>
         <div>
           <label htmlFor='name'>Név:</label>
@@ -76,14 +80,10 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
 
         <div>
           <label htmlFor='companyType'>Cégforma:</label>
-          <select
-            id='companyType'
-            value={partner.companyTypeId}
-            onChange={e => setPartner({ ...partner, companyTypeId: e.target.value })}
-          >
-            <option value='' />
-            {companyTypesOptions}
-          </select>
+          <Select
+            onChange={selected => setPartner({ ...partner, companyTypeId: selected.value })}
+            options={companyTypesOptions}
+          />
         </div>
 
         <div>

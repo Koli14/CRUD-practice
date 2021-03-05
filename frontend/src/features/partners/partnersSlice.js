@@ -15,8 +15,11 @@ export const fetchPartners = createAsyncThunk('partners/fetchPartners', async ()
 
 export const addNewPartner = createAsyncThunk(
   'partners/addNewPartner',
-  async (initialPartner) => {
-    const response = await client.post('/partners', { ...initialPartner })
+  async (newPartner) => {
+    if (newPartner.companyTypeId === '') {
+      delete newPartner.companyTypeId
+    }
+    const response = await client.post('/partners', { ...newPartner })
     return { ...response, companyTypeId: Number(response.companyTypeId), settlementId: Number(response.settlementId) }
   }
 )

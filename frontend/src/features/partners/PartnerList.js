@@ -30,24 +30,20 @@ const PartnerRow = ({ partnerId }) => {
     }
   }
 
-  if (companyType && settlement) {
-    return (
-      <tr>
-        <td>{partner.name}</td>
-        <td>{companyType.name}</td>
-        <td>{partner.taxNumber}</td>
-        <td>{partner.companyRegistrationNumber}</td>
-        <td>{settlement.name}</td>
-        <td>{partner.address}</td>
-        <td>{partner.phone}</td>
-        <td>{partner.bankAccount}</td>
-        <td>{partner.comment}</td>
-        <td> <button onClick={onDeleteClicked} disabled={deleteRequestStatus !== 'idle'}>Törlés</button></td>
-      </tr>
-    )
-  } else {
-    return <tr className='loader'><td>Loading...</td></tr>
-  }
+  return (
+    <tr>
+      <td>{partner.name}</td>
+      <td>{companyType && companyType.name}</td>
+      <td>{partner.taxNumber}</td>
+      <td>{partner.companyRegistrationNumber}</td>
+      <td>{settlement && settlement.name}</td>
+      <td>{partner.address}</td>
+      <td>{partner.phone}</td>
+      <td>{partner.bankAccount}</td>
+      <td>{partner.comment}</td>
+      <td> <button onClick={onDeleteClicked} disabled={deleteRequestStatus !== 'idle'}>Törlés</button></td>
+    </tr>
+  )
 }
 
 const PartnerTable = ({ partnerIds }) => {
