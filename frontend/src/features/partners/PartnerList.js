@@ -1,17 +1,34 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchPartners, selectPartnerIds, selectPartnerById } from './partnersSlice'
+import { fetchPartners, selectPartnerIds, selectPartnerById, deletePartner } from './partnersSlice'
+import { selectCompanyTypeById } from '../companyTypes/companyTypesSlice'
+import { selectSettlementById } from '../settlements/settlementsSlice'
 import './PartnerList.css'
 import AddPartnerModal from './AddPartnerModal'
+import { unwrapResult } from '@reduxjs/toolkit'
 
 const PartnerRow = ({ partnerId }) => {
+  const dispatch = useDispatch()
+
   const partner = useSelector(state => selectPartnerById(state, partnerId))
-  const companyType = useSelector((state) =>
-    state.companyTypes.find((companyType) => companyType.id === partner.companyTypeId)
+  const companyType = useSelector(state => selectCompanyTypeById(state, partner.companyTypeId))
+  const settlement = useSelector(state => selectSettlementById(state, partner.settlementId)
   )
-  const settlement = useSelector((state) =>
-    state.settlements.find((settlement) => settlement.id === partner.settlementId)
-  )
+  const [deleteRequestStatus, setDeleteRequestStatus] = useState('idle')
+
+  const onDeleteClicked = async () => {
+    if (deleteRequestStatus === 'idle') {
+      try {
+        setDeleteRequestStatus('pending')
+        const resultAction = await dispatch(deletePartner({ partnerId }))
+        unwrapResult(resultAction)
+      } catch (error) {
+        console.error('Failed to delete the Partner: ', error)
+      } finally {
+        setDeleteRequestStatus('idle')
+      }
+    }
+  }
 
   if (companyType && settlement) {
     return (
@@ -25,6 +42,7 @@ const PartnerRow = ({ partnerId }) => {
         <td>{partner.phone}</td>
         <td>{partner.bankAccount}</td>
         <td>{partner.comment}</td>
+        <td> <button onClick={onDeleteClicked} disabled={deleteRequestStatus !== 'idle'}>Törlés</button></td>
       </tr>
     )
   } else {
@@ -46,6 +64,7 @@ const PartnerTable = ({ partnerIds }) => {
           <th>Telefonszám</th>
           <th>Bankszámlaszám</th>
           <th>Megjegyzés</th>
+          <th>Törlés</th>
         </tr>
       </thead>
       <tbody>

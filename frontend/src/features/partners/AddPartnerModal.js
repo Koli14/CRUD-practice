@@ -5,6 +5,8 @@ import { unwrapResult } from '@reduxjs/toolkit'
 
 import './AddPartnerModal.css'
 import { addNewPartner } from './partnersSlice'
+import { selectAllCompanyTypes } from '../companyTypes/companyTypesSlice'
+import { selectAllSettlements } from '../settlements/settlementsSlice'
 
 const initialPartner = {
   name: '',
@@ -22,8 +24,8 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
   const [partner, setPartner] = useState(initialPartner)
   const [addRequestStatus, setAddRequestStatus] = useState('idle')
   const dispatch = useDispatch()
-  const companyTypes = useSelector((state) => state.companyTypes)
-  const settlements = useSelector((state) => state.settlements)
+  const companyTypes = useSelector(selectAllCompanyTypes)
+  const settlements = useSelector(selectAllSettlements)
 
   const canSave =
     [partner.name, partner.settlementId].every(Boolean) && addRequestStatus === 'idle'

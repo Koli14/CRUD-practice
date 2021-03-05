@@ -1,7 +1,9 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit'
 import { client } from '../../api/client'
 
-const initialState = []
+const companyTypesAdapter = createEntityAdapter()
+
+const initialState = companyTypesAdapter.getInitialState()
 
 export const fetchCompanyTypes = createAsyncThunk('companyTypes/fetchCompanyTypes', async () => {
   const response = await client.get('/companyTypes')
@@ -13,10 +15,13 @@ const companyTypesSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
-    [fetchCompanyTypes.fulfilled]: (state, action) => {
-      return action.payload
-    }
+    [fetchCompanyTypes.fulfilled]: companyTypesAdapter.setAll
   }
 })
 
 export default companyTypesSlice.reducer
+
+export const {
+  selectAll: selectAllCompanyTypes,
+  selectById: selectCompanyTypeById
+} = companyTypesAdapter.getSelectors(state => state.companyTypes)

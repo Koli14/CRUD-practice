@@ -38,3 +38,6 @@ client.get = function (endpoint, customConfig = {}) {
 client.post = function (endpoint, body, customConfig = {}) {
   return client(endpoint, { ...customConfig, body })
 }
+client.delete = function (endpoint, customConfig = {}) {
+  return client(endpoint, { ...customConfig, method: 'DELETE' })
+}

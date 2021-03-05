@@ -21,6 +21,11 @@ export const addNewPartner = createAsyncThunk(
   }
 )
 
+export const deletePartner = createAsyncThunk('partners/deltePartner', async ({ partnerId }) => {
+  const response = await client.delete(`/partners/${partnerId}`)
+  return response.id
+})
+
 const partnersSlice = createSlice({
   name: 'partners',
   initialState,
@@ -55,7 +60,8 @@ const partnersSlice = createSlice({
       state.status = 'failed'
       state.error = action.error.message
     },
-    [addNewPartner.fulfilled]: partnersAdapter.addOne
+    [addNewPartner.fulfilled]: partnersAdapter.addOne,
+    [deletePartner.fulfilled]: partnersAdapter.removeOne
   }
 })
 export const { partnerAdded, partnerUpdated } = partnersSlice.actions
