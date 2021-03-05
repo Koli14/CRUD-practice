@@ -15,10 +15,6 @@ export default (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false
-    },
-    zip: {
-      type: DataTypes.INTEGER,
-      allowNull: false
     }
   }, {
     sequelize,

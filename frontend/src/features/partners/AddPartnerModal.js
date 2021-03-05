@@ -7,7 +7,7 @@ import CreatableSelect from 'react-select/creatable'
 import './AddPartnerModal.css'
 import { addNewPartner } from './partnersSlice'
 import { selectAllCompanyTypesOptions, addNewCompanyType } from '../companyTypes/companyTypesSlice'
-import { selectAllSettlements } from '../settlements/settlementsSlice'
+import { selectAllSettlementsOptions, addNewSettlement } from '../settlements/settlementsSlice'
 
 const initialPartner = {
   name: '',
@@ -43,10 +43,22 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
     }
   }
 
-  const settlements = useSelector(selectAllSettlements)
-  const settlementsOptions = settlements.map((settlement) => (
-    { value: settlement.id, label: settlement.name }
-  ))
+  const [selectedSettlement, setSelectedSettlement] = useState()
+  const settlementsOptions = useSelector(selectAllSettlementsOptions)
+  const [isLoadingSettlements, setIsLoadingSettlements] = useState(false)
+  const handleSettlementCreate = async (input) => {
+    setIsLoadingSettlements(true)
+    try {
+      const resultAction = await dispatch(addNewSettlement(input))
+      const newSettlement = unwrapResult(resultAction)
+      setSelectedSettlement({ value: newSettlement.id, label: newSettlement.name })
+      setPartner({ ...partner, settlementId: newSettlement.id })
+    } catch (err) {
+      console.error('Failed to save the Settlement: ', err)
+    } finally {
+      setIsLoadingSettlements(false)
+    }
+  }
 
   const canSave =
     [partner.name, partner.settlementId].every(Boolean) && addRequestStatus === 'idle'
@@ -59,6 +71,7 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
         unwrapResult(resultAction)
         setPartner(initialPartner)
         setSelectedCompanyType()
+        setSelectedSettlement()
         onRequestClose()
       } catch (err) {
         console.error('Failed to save the partner: ', err)
@@ -126,8 +139,12 @@ const AddPartnerModal = ({ isOpen, onRequestClose }) => {
           <label htmlFor='settlement'>Település:</label>
           <CreatableSelect
             isClearable
+            isDisabled={isLoadingSettlements}
+            isLoading={isLoadingSettlements}
             onChange={selected => setPartner({ ...partner, settlementId: selected.value })}
+            onCreateOption={handleSettlementCreate}
             options={settlementsOptions}
+            value={selectedSettlement}
           />
         </div>
 

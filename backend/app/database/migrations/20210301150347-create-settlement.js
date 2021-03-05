@@ -11,10 +11,6 @@ export default {
         type: Sequelize.STRING,
         allowNull: false
       },
-      zip: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
 
       createdAt: {
         allowNull: false,
