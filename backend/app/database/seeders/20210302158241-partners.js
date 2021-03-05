@@ -1,9 +1,9 @@
 export default {
   up: async (queryInterface, Sequelize) => {
-    const parnterIds = await queryInterface.sequelize.query(
+    const [parnterIds] = await queryInterface.sequelize.query(
       'SELECT id from Partners;'
     )
-    if (!parnterIds) {
+    if (!parnterIds.length) {
       const [companyTypes] = await queryInterface.sequelize.query(
         'SELECT id from CompanyTypes;'
       )

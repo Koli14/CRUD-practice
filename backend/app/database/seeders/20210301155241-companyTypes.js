@@ -1,9 +1,9 @@
 export default {
   up: async (queryInterface, Sequelize) => {
-    const companyTypeIds = await queryInterface.sequelize.query(
+    const [companyTypeIds] = await queryInterface.sequelize.query(
       'SELECT id from CompanyTypes;'
     )
-    if (!companyTypeIds) {
+    if (!companyTypeIds.length) {
       await queryInterface.bulkInsert('CompanyTypes', [
         {
           name: 'Vállalat',
