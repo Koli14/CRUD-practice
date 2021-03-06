@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "cd backend && npm i && cd ../frontend && npm i && cd ..",
     "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" ",
-    "restartDB": "cd backend && npm run restartDB",
+    "resetDB": "cd backend && npm run resetDB",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

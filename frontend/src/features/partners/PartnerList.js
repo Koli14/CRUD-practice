@@ -4,11 +4,15 @@ import { fetchPartners, selectPartnerIds, selectPartnerById, deletePartner } fro
 import { selectCompanyTypeById } from '../companyTypes/companyTypesSlice'
 import { selectSettlementById } from '../settlements/settlementsSlice'
 import './PartnerList.css'
-import AddPartnerModal from './AddPartnerModal'
-import UpdatePartnerModal from './UpdatePartnerModal'
+import PartnerModal from './PartnerModal'
 import { unwrapResult } from '@reduxjs/toolkit'
 
-const PartnerRow = ({ partnerId }) => {
+const partnerParams = ['name', 'companyTypeId', 'taxNumber', 'companyRegistrationNumber', 'settlementId', 'address', 'phone', 'bankAccount', 'comment']
+const paramsTranslations = ['Név', 'Cégforma', 'Adószám', 'Cégjegyzékszám', 'Település', 'Cím', 'Telefonszám', 'Bankszámlaszám', 'Megjegyzés']
+
+export const emptyPartner = partnerParams.reduce((o, key) => ({ ...o, [key]: '' }), {})
+
+const PartnerRow = ({ partnerId, setSelectedPartner, setIsOpen }) => {
   const dispatch = useDispatch()
 
   const partner = useSelector(state => selectPartnerById(state, partnerId))
@@ -16,7 +20,6 @@ const PartnerRow = ({ partnerId }) => {
   const settlement = useSelector(state => selectSettlementById(state, partner.settlementId)
   )
   const [deleteRequestStatus, setDeleteRequestStatus] = useState('idle')
-  const [modalIsOpen, setIsOpen] = useState(false)
 
   const onDeleteClicked = async () => {
     if (deleteRequestStatus === 'idle') {
@@ -44,8 +47,7 @@ const PartnerRow = ({ partnerId }) => {
       <td>{partner.bankAccount}</td>
       <td>{partner.comment}</td>
       <td>
-        <button onClick={() => setIsOpen(true)}>Szerkesztés</button>
-        <UpdatePartnerModal isOpen={modalIsOpen} onRequestClose={() => setIsOpen(false)} partnerId={partnerId} />
+        <button onClick={() => { setSelectedPartner(partner); setIsOpen(true) }}>Szerkesztés</button>
       </td>
       <td>
         <button onClick={onDeleteClicked} disabled={deleteRequestStatus !== 'idle'}>
@@ -56,27 +58,24 @@ const PartnerRow = ({ partnerId }) => {
   )
 }
 
-const PartnerTable = ({ partnerIds }) => {
+const PartnerTable = ({ partnerIds, setSelectedPartner, setIsOpen }) => {
   return (
     <table>
       <thead>
         <tr>
-          <th>Név</th>
-          <th>Cégforma</th>
-          <th>Adószám</th>
-          <th>Cégjegyzékszám</th>
-          <th>Település</th>
-          <th>Cím</th>
-          <th>Telefonszám</th>
-          <th>Bankszámlaszám</th>
-          <th>Megjegyzés</th>
+          {paramsTranslations.map(t => <th key={t}>{t}</th>)}
           <th>Szerkesztés</th>
           <th>Törlés</th>
         </tr>
       </thead>
       <tbody>
         {partnerIds.map(partnerId =>
-          <PartnerRow key={partnerId} partnerId={partnerId} />
+          <PartnerRow
+            key={partnerId}
+            partnerId={partnerId}
+            setSelectedPartner={setSelectedPartner}
+            setIsOpen={setIsOpen}
+          />
         )}
       </tbody>
     </table>
@@ -85,7 +84,7 @@ const PartnerTable = ({ partnerIds }) => {
 
 const PartnerList = () => {
   const [modalIsOpen, setIsOpen] = useState(false)
-
+  const [selectedPartner, setSelectedPartner] = useState(emptyPartner)
   const dispatch = useDispatch()
   const partnerIds = useSelector(selectPartnerIds)
   const partnerStatus = useSelector(state => state.partners.status)
@@ -102,7 +101,13 @@ const PartnerList = () => {
   if (partnerStatus === 'loading') {
     table = <div className='loader'>Loading...</div>
   } else if (partnerStatus === 'succeeded') {
-    table = <PartnerTable partnerIds={partnerIds} />
+    table = (
+      <PartnerTable
+        partnerIds={partnerIds}
+        setSelectedPartner={setSelectedPartner}
+        setIsOpen={setIsOpen}
+      />
+    )
   } else if (partnerStatus === 'error') {
     table = <div>{error}</div>
   }
@@ -111,10 +116,16 @@ const PartnerList = () => {
     <section className='partners-list'>
       <div>
         <h2>Partnerek</h2>
-        <button onClick={() => setIsOpen(true)}>Új Partner létrehozása</button>
+        <button onClick={() => setIsOpen(true)}>
+          Új Partner létrehozása
+        </button>
       </div>
       {table}
-      <AddPartnerModal isOpen={modalIsOpen} onRequestClose={() => setIsOpen(false)} />
+      <PartnerModal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setIsOpen(false)}
+        selectedPartner={selectedPartner}
+      />
     </section>
   )
 }

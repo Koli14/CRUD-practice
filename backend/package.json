@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
-    "dev": "npx sequelize-cli db:seed:all && nodemon --exec babel-node server.js",
-    "restartDB": "npx sequelize-cli db:seed:undo:all && npx sequelize-cli db:seed:all",
+    "postinstall": "npm run initDB",
+    "dev": "npm run initDB && nodemon --exec babel-node server.js",
+    "initDB": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+    "resetDB": "npx sequelize-cli db:migrate:undo:all && npm run initDB",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
