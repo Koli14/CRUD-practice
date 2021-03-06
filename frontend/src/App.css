@@ -2,15 +2,12 @@
   margin: 16px;
 }
 
-
 .App-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 8px 16px;
 }
-
-
 
 .App-logo {
   pointer-events: none;
