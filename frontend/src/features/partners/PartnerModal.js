@@ -11,7 +11,6 @@ import { selectAllSettlementsOptions, addNewSettlement } from '../settlements/se
 import { emptyPartner } from './PartnerList'
 
 const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
-  console.log(selectedPartner)
   Modal.setAppElement('#root')
   const dispatch = useDispatch()
   const [partner, setPartner] = useState(selectedPartner)
@@ -20,7 +19,10 @@ const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
   }, [selectedPartner])
   const [requestStatus, setRequestStatus] = useState('idle')
 
-  const [selectedCompanyType, setSelectedCompanyType] = useState()
+  const createOption = (options, id) => {
+    return (options.find((option) => option.value === id))
+  }
+
   const companyTypesOptions = useSelector(selectAllCompanyTypesOptions)
   const [isLoadingCompanyTypes, setIsLoadingCompanyTypes] = useState(false)
   const handleCompanyTypeCreate = async (input) => {
@@ -28,7 +30,6 @@ const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
     try {
       const resultAction = await dispatch(addNewCompanyType(input))
       const newCompanyType = unwrapResult(resultAction)
-      setSelectedCompanyType({ value: newCompanyType.id, label: newCompanyType.name })
       setPartner({ ...partner, companyTypeId: newCompanyType.id })
     } catch (err) {
       console.error('Failed to save the CompanyType: ', err)
@@ -37,7 +38,6 @@ const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
     }
   }
 
-  const [selectedSettlement, setSelectedSettlement] = useState()
   const settlementsOptions = useSelector(selectAllSettlementsOptions)
   const [isLoadingSettlements, setIsLoadingSettlements] = useState(false)
   const handleSettlementCreate = async (input) => {
@@ -45,7 +45,6 @@ const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
     try {
       const resultAction = await dispatch(addNewSettlement(input))
       const newSettlement = unwrapResult(resultAction)
-      setSelectedSettlement({ value: newSettlement.id, label: newSettlement.name })
       setPartner({ ...partner, settlementId: newSettlement.id })
     } catch (err) {
       console.error('Failed to save the Settlement: ', err)
@@ -61,11 +60,10 @@ const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
     if (canSave) {
       try {
         setRequestStatus('pending')
-        const resultAction = await dispatch(addNewPartner(partner))
-        unwrapResult(resultAction)
+        await dispatch(partner.id
+          ? updatePartner(partner)
+          : addNewPartner(partner))
         setPartner(emptyPartner)
-        setSelectedCompanyType()
-        setSelectedSettlement()
         onRequestClose()
       } catch (err) {
         console.error('Failed to save the partner: ', err)
@@ -102,7 +100,7 @@ const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
             onChange={selected => setPartner({ ...partner, companyTypeId: selected.value })}
             onCreateOption={handleCompanyTypeCreate}
             options={companyTypesOptions}
-            value={selectedCompanyType}
+            value={createOption(companyTypesOptions, partner.companyTypeId)}
           />
         </div>
 
@@ -136,7 +134,7 @@ const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
             onChange={selected => setPartner({ ...partner, settlementId: selected.value })}
             onCreateOption={handleSettlementCreate}
             options={settlementsOptions}
-            value={selectedSettlement}
+            value={createOption(settlementsOptions, partner.settlementId)}
           />
         </div>
 

@@ -116,7 +116,7 @@ const PartnerList = () => {
     <section className='partners-list'>
       <div>
         <h2>Partnerek</h2>
-        <button onClick={() => setIsOpen(true)}>
+        <button onClick={() => { setSelectedPartner(emptyPartner); setIsOpen(true) }}>
           Új Partner létrehozása
         </button>
       </div>
