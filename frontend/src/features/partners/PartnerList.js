@@ -7,8 +7,8 @@ import './PartnerList.css'
 import PartnerModal from './PartnerModal'
 import { unwrapResult } from '@reduxjs/toolkit'
 
-const partnerParams = ['name', 'companyTypeId', 'taxNumber', 'companyRegistrationNumber', 'settlementId', 'address', 'phone', 'bankAccount', 'comment']
-const paramsTranslations = ['Név', 'Cégforma', 'Adószám', 'Cégjegyzékszám', 'Település', 'Cím', 'Telefonszám', 'Bankszámlaszám', 'Megjegyzés']
+export const partnerParams = ['name', 'companyTypeId', 'taxNumber', 'companyRegistrationNumber', 'settlementId', 'address', 'phone', 'bankAccount', 'comment']
+export const paramsTranslations = ['Név', 'Cégforma', 'Adószám', 'Cégjegyzékszám', 'Település', 'Cím', 'Telefonszám', 'Bankszámlaszám', 'Megjegyzés']
 
 export const emptyPartner = partnerParams.reduce((o, key) => ({ ...o, [key]: '' }), {})
 
@@ -58,8 +58,21 @@ const PartnerRow = ({ partnerId, setSelectedPartner, setIsOpen }) => {
   )
 }
 
-const PartnerTable = ({ partnerIds, setSelectedPartner, setIsOpen }) => {
-  return (
+const PartnerList = () => {
+  const [modalIsOpen, setIsOpen] = useState(false)
+  const [selectedPartner, setSelectedPartner] = useState(emptyPartner)
+  const dispatch = useDispatch()
+  const partnerIds = useSelector(selectPartnerIds)
+  const partnerStatus = useSelector(state => state.partners.status)
+  const error = useSelector((state) => state.partners.error)
+
+  useEffect(() => {
+    if (partnerStatus === 'idle') {
+      dispatch(fetchPartners())
+    }
+  }, [partnerStatus, dispatch])
+
+  const PartnerTable = ({ partnerIds }) => (
     <table>
       <thead>
         <tr>
@@ -80,28 +93,13 @@ const PartnerTable = ({ partnerIds, setSelectedPartner, setIsOpen }) => {
       </tbody>
     </table>
   )
-}
 
-const PartnerList = () => {
-  const [modalIsOpen, setIsOpen] = useState(false)
-  const [selectedPartner, setSelectedPartner] = useState(emptyPartner)
-  const dispatch = useDispatch()
-  const partnerIds = useSelector(selectPartnerIds)
-  const partnerStatus = useSelector(state => state.partners.status)
-  const error = useSelector((state) => state.partners.error)
-
-  useEffect(() => {
-    if (partnerStatus === 'idle') {
-      dispatch(fetchPartners())
-    }
-  }, [partnerStatus, dispatch])
-
-  let table
+  let content
 
   if (partnerStatus === 'loading') {
-    table = <div className='loader'>Loading...</div>
+    content = <div className='loader'>Loading...</div>
   } else if (partnerStatus === 'succeeded') {
-    table = (
+    content = (
       <PartnerTable
         partnerIds={partnerIds}
         setSelectedPartner={setSelectedPartner}
@@ -109,7 +107,7 @@ const PartnerList = () => {
       />
     )
   } else if (partnerStatus === 'error') {
-    table = <div>{error}</div>
+    content = <div>{error}</div>
   }
 
   return (
@@ -120,7 +118,7 @@ const PartnerList = () => {
           Új Partner létrehozása
         </button>
       </div>
-      {table}
+      {content}
       <PartnerModal
         isOpen={modalIsOpen}
         onRequestClose={() => setIsOpen(false)}

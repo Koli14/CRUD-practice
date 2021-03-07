@@ -8,7 +8,7 @@ import './Modal.css'
 import { addNewPartner, updatePartner } from './partnersSlice'
 import { selectAllCompanyTypesOptions, addNewCompanyType } from '../companyTypes/companyTypesSlice'
 import { selectAllSettlementsOptions, addNewSettlement } from '../settlements/settlementsSlice'
-import { emptyPartner } from './PartnerList'
+import { emptyPartner, partnerParams, paramsTranslations } from './PartnerList'
 
 const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
   Modal.setAppElement('#root')
@@ -73,6 +73,55 @@ const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
     }
   }
 
+  const form = (
+    <form>
+      {partnerParams.map((param, index) => {
+        if (param === 'companyTypeId') {
+          return (
+            <div>
+              <label htmlFor='companyType'>Cégforma:</label>
+              <CreatableSelect
+                isDisabled={isLoadingCompanyTypes}
+                isLoading={isLoadingCompanyTypes}
+                onChange={selected => setPartner({ ...partner, companyTypeId: selected.value })}
+                onCreateOption={handleCompanyTypeCreate}
+                options={companyTypesOptions}
+                value={createOption(companyTypesOptions, partner.companyTypeId)}
+              />
+            </div>
+          )
+        } else if (param === 'settlementId') {
+          return (
+            <div>
+              <label htmlFor='settlement'>Település:</label>
+              <CreatableSelect
+                isDisabled={isLoadingSettlements}
+                isLoading={isLoadingSettlements}
+                onChange={selected => setPartner({ ...partner, settlementId: selected.value })}
+                onCreateOption={handleSettlementCreate}
+                options={settlementsOptions}
+                value={createOption(settlementsOptions, partner.settlementId)}
+              />
+            </div>
+          )
+        } else {
+          return (
+            <div key={param}>
+              <label htmlFor={param}>{paramsTranslations[index]}:</label>
+              <input
+                type='text'
+                id={param}
+                name={param}
+                value={partner[param]}
+                onChange={e => setPartner({ ...partner, [param]: e.target.value })}
+              />
+            </div>
+          )
+        }
+      })}
+    </form>
+  )
+
   return (
     <Modal
       isOpen={isOpen}
@@ -80,109 +129,7 @@ const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
       style={customStyles}
       contentLabel='Add Partner Modal'
     >
-      <form>
-        <div>
-          <label htmlFor='name'>Név:</label>
-          <input
-            type='text'
-            id='name'
-            name='name'
-            value={partner.name}
-            onChange={e => setPartner({ ...partner, name: e.target.value })}
-          />
-        </div>
-
-        <div>
-          <label htmlFor='companyType'>Cégforma:</label>
-          <CreatableSelect
-            isDisabled={isLoadingCompanyTypes}
-            isLoading={isLoadingCompanyTypes}
-            onChange={selected => setPartner({ ...partner, companyTypeId: selected.value })}
-            onCreateOption={handleCompanyTypeCreate}
-            options={companyTypesOptions}
-            value={createOption(companyTypesOptions, partner.companyTypeId)}
-          />
-        </div>
-
-        <div>
-          <label htmlFor='taxNumber'>Adószám:</label>
-          <input
-            type='text'
-            id='taxNumber'
-            name='taxNumber'
-            value={partner.taxNumber}
-            onChange={e => setPartner({ ...partner, taxNumber: e.target.value })}
-          />
-        </div>
-
-        <div>
-          <label htmlFor='companyRegistrationNumber'>Cégjegyzékszám:</label>
-          <input
-            type='text'
-            id='companyRegistrationNumber'
-            name='companyRegistrationNumber'
-            value={partner.companyRegistrationNumber}
-            onChange={e => setPartner({ ...partner, companyRegistrationNumber: e.target.value })}
-          />
-        </div>
-
-        <div>
-          <label htmlFor='settlement'>Település:</label>
-          <CreatableSelect
-            isDisabled={isLoadingSettlements}
-            isLoading={isLoadingSettlements}
-            onChange={selected => setPartner({ ...partner, settlementId: selected.value })}
-            onCreateOption={handleSettlementCreate}
-            options={settlementsOptions}
-            value={createOption(settlementsOptions, partner.settlementId)}
-          />
-        </div>
-
-        <div>
-          <label htmlFor='address'>Cím:</label>
-          <input
-            type='text'
-            id='address'
-            name='address'
-            value={partner.address}
-            onChange={e => setPartner({ ...partner, address: e.target.value })}
-          />
-        </div>
-
-        <div>
-          <label htmlFor='phone'>Telefonszám:</label>
-          <input
-            type='text'
-            id='phone'
-            name='phone'
-            value={partner.phone}
-            onChange={e => setPartner({ ...partner, phone: e.target.value })}
-          />
-        </div>
-
-        <div>
-          <label htmlFor='bankAccount'>Bankszámlaszám:</label>
-          <input
-            type='text'
-            id='bankAccount'
-            name='bankAccount'
-            value={partner.bankAccount}
-            onChange={e => setPartner({ ...partner, bankAccount: e.target.value })}
-          />
-        </div>
-
-        <div>
-          <label htmlFor='comment'>Megjegyzés:</label>
-          <input
-            type='text'
-            id='comment'
-            name='comment'
-            value={partner.comment}
-            onChange={e => setPartner({ ...partner, comment: e.target.value })}
-          />
-        </div>
-
-      </form>
+      {form}
       <div className='buttons'>
         <button onClick={onSavePartnerClicked} disabled={!canSave}>Mentés</button>
         <button onClick={onRequestClose}>Mégsem</button>
