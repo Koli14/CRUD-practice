@@ -114,8 +114,22 @@ const PartnerList = () => {
     <section className='partners-list'>
       <div>
         <h2>Partnerek</h2>
-        <button onClick={() => { setSelectedPartner(emptyPartner); setIsOpen(true) }}>
+        <button
+          onClick={() => {
+            setSelectedPartner(emptyPartner)
+            setIsOpen(true)
+          }}
+        >
           Új Partner létrehozása
+        </button>
+        <button
+          className='DownloadButton'
+          onClick={(e) => {
+            e.preventDefault()
+            window.location.href = 'http://localhost:5000/api/admin/download'
+          }}
+        >
+          Partnerek letöltése Excel-ben
         </button>
       </div>
       {content}

@@ -1,5 +1,5 @@
 import Modal from 'react-modal'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit'
 import CreatableSelect from 'react-select/creatable'

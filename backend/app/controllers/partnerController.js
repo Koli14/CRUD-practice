@@ -1,20 +1,20 @@
 import model from '../models'
 import excel from 'exceljs'
 
-const { Partner } = model
+const { Partner, Settlement, CompanyType } = model
 
-const download = (req, res) => {
-  Partner.findAll().then((objs) => {
+export const download = (req, res) => {
+  Partner.findAll({ include: [CompanyType, Settlement] }).then((objs) => {
     const partners = []
 
     objs.forEach((obj) => {
       partners.push({
         id: obj.id,
         name: obj.name,
-        companyTypeId: obj.companyTypeId,
+        companyTypeId: obj.CompanyType.name,
         taxNumber: obj.taxNumber,
         companyRegistrationNumber: obj.companyRegistrationNumber,
-        settlementId: obj.settlementId,
+        settlementId: obj.Settlement.name,
         address: obj.address,
         phone: obj.phone,
         bankAccount: obj.bankAccount,
@@ -23,19 +23,21 @@ const download = (req, res) => {
     })
 
     const workbook = new excel.Workbook()
-    const worksheet = workbook.addWorksheet('Tutorials')
+    const worksheet = workbook.addWorksheet('Partners')
+
+    worksheet.properties.defaultColWidth = 30
 
     worksheet.columns = [
       { header: 'Id', key: 'id', width: 5 },
-      { header: 'Name', key: 'name', width: 25 },
-      { header: 'CompanyTypeId', key: 'companyTypeId', width: 25 },
-      { header: 'TaxNumber', key: 'taxNumber', width: 10 },
-      { header: 'CompanyRegistrationNumber', key: 'companyRegistrationNumber', width: 10 },
-      { header: 'SettlementId', key: 'settlementId', width: 10 },
-      { header: 'Address', key: 'address', width: 10 },
-      { header: 'Phone', key: 'phone', width: 10 },
-      { header: 'BankAccount', key: 'bankAccount', width: 10 },
-      { header: 'Comment', key: 'comment', width: 10 }
+      { header: 'Név', key: 'name' },
+      { header: 'Cégforma', key: 'companyTypeId' },
+      { header: 'Adószám', key: 'taxNumber' },
+      { header: 'Cégjegyzékszám', key: 'companyRegistrationNumber' },
+      { header: 'Település', key: 'settlementId' },
+      { header: 'Cím', key: 'address' },
+      { header: 'Telefonszám', key: 'phone' },
+      { header: 'Bankszámlaszám', key: 'bankAccount' },
+      { header: 'Megjegyzés', key: 'comment' }
     ]
 
     // Add Array Rows
@@ -54,8 +56,4 @@ const download = (req, res) => {
       res.status(200).end()
     })
   })
-}
-
-export default {
-  download
 }
