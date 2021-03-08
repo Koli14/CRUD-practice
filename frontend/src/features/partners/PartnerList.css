@@ -1,3 +1,31 @@
+.Header {
+  display: flex;
+}
+.Header > div {
+  margin-right: 32px;
+}
+
+.Buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.Buttons button {
+  margin-top: 8px;
+}
+
+.SearchSection h4{
+ margin: 8px;
+}
+.SearchFields {
+  display: flex;
+}
+.SearchFields > div {
+  margin: 0 8px;
+  display: flex;
+  flex-direction: column;
+}
+
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -13,8 +41,4 @@ td, th {
 
 tr:nth-child(even) {
   background-color: #dddddd;
-}
-
-.DownloadButton {
-  margin-left: 16px;
 }

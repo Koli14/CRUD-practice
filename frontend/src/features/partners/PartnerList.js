@@ -12,7 +12,7 @@ export const paramsTranslations = ['Név', 'Cégforma', 'Adószám', 'Cégjegyz�
 
 export const emptyPartner = partnerParams.reduce((o, key) => ({ ...o, [key]: '' }), {})
 
-const PartnerRow = ({ partnerId, setSelectedPartner, setIsOpen }) => {
+const PartnerRow = ({ partnerId, setSelectedPartner, setIsOpen, filters }) => {
   const dispatch = useDispatch()
 
   const partner = useSelector(state => selectPartnerById(state, partnerId))
@@ -34,33 +34,53 @@ const PartnerRow = ({ partnerId, setSelectedPartner, setIsOpen }) => {
       }
     }
   }
-
-  return (
-    <tr>
-      <td>{partner.name}</td>
-      <td>{companyType && companyType.name}</td>
-      <td>{partner.taxNumber}</td>
-      <td>{partner.companyRegistrationNumber}</td>
-      <td>{settlement && settlement.name}</td>
-      <td>{partner.address}</td>
-      <td>{partner.phone}</td>
-      <td>{partner.bankAccount}</td>
-      <td>{partner.comment}</td>
-      <td>
-        <button onClick={() => { setSelectedPartner(partner); setIsOpen(true) }}>Szerkesztés</button>
-      </td>
-      <td>
-        <button onClick={onDeleteClicked} disabled={deleteRequestStatus !== 'idle'}>
-          Törlés
-        </button>
-      </td>
-    </tr>
-  )
+  const isFiltered = () => {
+    return Object.entries(filters).every(filter => {
+      if (filter[1] !== '') {
+        if (filter[0] === 'companyType') {
+          return companyType?.name.toUpperCase().includes(filter[1].toUpperCase())
+        } else if (filter[0] === 'settlement') {
+          return settlement.name.toUpperCase().includes(filter[1].toUpperCase())
+        } else {
+          return partner[filter[0]].toUpperCase().includes(filter[1].toUpperCase())
+        }
+      } else {
+        return true
+      }
+    })
+  }
+  if (isFiltered()) {
+    return (
+      <tr>
+        <td>{partner.name}</td>
+        <td>{companyType && companyType.name}</td>
+        <td>{partner.taxNumber}</td>
+        <td>{partner.companyRegistrationNumber}</td>
+        <td>{settlement && settlement.name}</td>
+        <td>{partner.address}</td>
+        <td>{partner.phone}</td>
+        <td>{partner.bankAccount}</td>
+        <td>{partner.comment}</td>
+        <td>
+          <button onClick={() => { setSelectedPartner(partner); setIsOpen(true) }}>Szerkesztés</button>
+        </td>
+        <td>
+          <button onClick={onDeleteClicked} disabled={deleteRequestStatus !== 'idle'}>
+            Törlés
+          </button>
+        </td>
+      </tr>
+    )
+  } else {
+    return ''
+  }
 }
 
 const PartnerList = () => {
   const [modalIsOpen, setIsOpen] = useState(false)
   const [selectedPartner, setSelectedPartner] = useState(emptyPartner)
+  const [filters, setFilters] = useState({})
+
   const dispatch = useDispatch()
   const partnerIds = useSelector(selectPartnerIds)
   const partnerStatus = useSelector(state => state.partners.status)
@@ -72,7 +92,7 @@ const PartnerList = () => {
     }
   }, [partnerStatus, dispatch])
 
-  const PartnerTable = ({ partnerIds }) => (
+  const PartnerTable = (
     <table>
       <thead>
         <tr>
@@ -88,6 +108,7 @@ const PartnerList = () => {
             partnerId={partnerId}
             setSelectedPartner={setSelectedPartner}
             setIsOpen={setIsOpen}
+            filters={filters}
           />
         )}
       </tbody>
@@ -99,38 +120,63 @@ const PartnerList = () => {
   if (partnerStatus === 'loading') {
     content = <div className='loader'>Loading...</div>
   } else if (partnerStatus === 'succeeded') {
-    content = (
-      <PartnerTable
-        partnerIds={partnerIds}
-        setSelectedPartner={setSelectedPartner}
-        setIsOpen={setIsOpen}
-      />
-    )
+    content = PartnerTable
   } else if (partnerStatus === 'error') {
     content = <div>{error}</div>
   }
 
   return (
-    <section className='partners-list'>
-      <div>
-        <h2>Partnerek</h2>
-        <button
-          onClick={() => {
-            setSelectedPartner(emptyPartner)
-            setIsOpen(true)
-          }}
-        >
-          Új Partner létrehozása
-        </button>
-        <button
-          className='DownloadButton'
-          onClick={(e) => {
-            e.preventDefault()
-            window.location.href = 'http://localhost:5000/api/admin/download'
-          }}
-        >
-          Partnerek letöltése Excel-ben
-        </button>
+    <section className='Partners-list'>
+      <h2>Partnerek</h2>
+      <div className='Header'>
+        <div className='Buttons'>
+          <button
+            onClick={() => {
+              setSelectedPartner(emptyPartner)
+              setIsOpen(true)
+            }}
+          >
+            Új Partner létrehozása
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              window.location.href = 'http://localhost:5000/api/admin/download'
+            }}
+          >
+            Partnerek letöltése Excel-ben
+          </button>
+        </div>
+        <div className='SearchSection'>
+          <h4>Keresés:</h4>
+          <div className='SearchFields'>
+            <div>
+              <label htmlFor='name'>Partner nevére:</label>
+              <input
+                id='name'
+                type='text'
+                onChange={e => setFilters({ ...filters, name: e.target.value })}
+              />
+            </div>
+            <div>
+              <label htmlFor='companyType'>Cégfromára:</label>
+              <input
+                id='companyType'
+                type='text'
+                onChange={e => setFilters({ ...filters, companyType: e.target.value })}
+              />
+            </div>
+            <div>
+              <label htmlFor='settlement'>Településre:</label>
+              <input
+                id='settlement'
+                type='text'
+                onChange={e => setFilters({ ...filters, settlement: e.target.value })}
+              />
+            </div>
+          </div>
+
+        </div>
       </div>
       {content}
       <PartnerModal
