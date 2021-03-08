@@ -122,7 +122,8 @@ const PartnerList = () => {
       <PartnerModal
         isOpen={modalIsOpen}
         onRequestClose={() => setIsOpen(false)}
-        selectedPartner={selectedPartner}
+        partner={selectedPartner}
+        setPartner={setSelectedPartner}
       />
     </section>
   )

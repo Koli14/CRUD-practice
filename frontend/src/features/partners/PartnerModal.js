@@ -4,19 +4,16 @@ import { useDispatch, useSelector } from 'react-redux'
 import { unwrapResult } from '@reduxjs/toolkit'
 import CreatableSelect from 'react-select/creatable'
 
-import './Modal.css'
+import './PartnerModal.css'
 import { addNewPartner, updatePartner } from './partnersSlice'
 import { selectAllCompanyTypesOptions, addNewCompanyType } from '../companyTypes/companyTypesSlice'
 import { selectAllSettlementsOptions, addNewSettlement } from '../settlements/settlementsSlice'
 import { emptyPartner, partnerParams, paramsTranslations } from './PartnerList'
 
-const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
+const AddPartnerModal = ({ isOpen, onRequestClose, partner, setPartner }) => {
   Modal.setAppElement('#root')
   const dispatch = useDispatch()
-  const [partner, setPartner] = useState(selectedPartner)
-  useEffect(() => {
-    setPartner(selectedPartner)
-  }, [selectedPartner])
+
   const [requestStatus, setRequestStatus] = useState('idle')
 
   const createOption = (options, id) => {
@@ -129,10 +126,12 @@ const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
       style={customStyles}
       contentLabel='Add Partner Modal'
     >
-      {form}
-      <div className='buttons'>
-        <button onClick={onSavePartnerClicked} disabled={!canSave}>Mentés</button>
-        <button onClick={onRequestClose}>Mégsem</button>
+      <div>
+        {form}
+        <div className='buttons'>
+          <button onClick={onSavePartnerClicked} disabled={!canSave}>Mentés</button>
+          <button onClick={onRequestClose}>Mégsem</button>
+        </div>
       </div>
 
     </Modal>
@@ -141,13 +140,11 @@ const AddPartnerModal = ({ isOpen, onRequestClose, selectedPartner }) => {
 
 const customStyles = {
   content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
+    inset: '16px auto auto 50%',
+    maxHeight: '82%',
     marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-    padding: '36px'
+    transform: 'translate(-50%, 0)',
+    padding: '16px 32px'
   }
 }
 
