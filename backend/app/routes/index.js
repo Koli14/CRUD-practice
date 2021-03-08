@@ -10,7 +10,7 @@ export default async (app) => {
   app.use(crud('/api/admin/settlements', sequelizeCrud(Settlement)))
   app.use(crud('/api/admin/companyTypes', sequelizeCrud(CompanyType)))
 
-  app.get('/api/admin/download', download)
+  app.get('/api/admin/downloadPartners', download)
 
   app.all('*', (req, res) => res.status(200).send({
     message: 'Hello World!'
