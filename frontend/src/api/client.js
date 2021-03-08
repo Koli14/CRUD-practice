@@ -3,7 +3,7 @@
 
 export async function client (endpoint, { body, ...customConfig } = {}) {
   const headers = { 'Content-Type': 'application/json' }
-  const API_ROOT = 'http://localhost:5000/api/admin'
+  const API_ADMIN_ROOT = 'http://localhost:5000/api/admin'
 
   const config = {
     method: body ? 'POST' : 'GET',
@@ -20,7 +20,7 @@ export async function client (endpoint, { body, ...customConfig } = {}) {
 
   let data
   try {
-    const response = await window.fetch(API_ROOT + endpoint, config)
+    const response = await window.fetch(API_ADMIN_ROOT + endpoint, config)
     data = await response.json()
     if (response.ok) {
       return data
