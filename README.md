@@ -3,14 +3,14 @@ Express, Sequelize and React, Reduxx CRUD practice for a job interview.
 
 ## Install
 To instal dependencies for both Backend and Frontend, and initialize test DB, simply run the following command:
-`npm i`
+### `npm i`
 
 ## Run
 To run both Frontend and Backend simultaniously, run:
-`npm run dev`
+### `npm run dev`
 Backend will run at `http://localhost:5000/`
 and Frontend at: `http://localhost:3000`
 
 ## Restart DB
 To restart the test DB run:
-`npm run restartDB`
+### `npm run restartDB`
