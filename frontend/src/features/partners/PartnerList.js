@@ -17,8 +17,7 @@ const PartnerRow = ({ partnerId, setSelectedPartner, setIsOpen, filters }) => {
 
   const partner = useSelector(state => selectPartnerById(state, partnerId))
   const companyType = useSelector(state => selectCompanyTypeById(state, partner.companyTypeId))
-  const settlement = useSelector(state => selectSettlementById(state, partner.settlementId)
-  )
+  const settlement = useSelector(state => selectSettlementById(state, partner.settlementId))
   const [deleteRequestStatus, setDeleteRequestStatus] = useState('idle')
 
   const onEdit = () => {
@@ -39,6 +38,7 @@ const PartnerRow = ({ partnerId, setSelectedPartner, setIsOpen, filters }) => {
       }
     }
   }
+
   const isFiltered = () => {
     return Object.entries(filters).every(filter => {
       if (filter[1] !== '') {
@@ -54,6 +54,7 @@ const PartnerRow = ({ partnerId, setSelectedPartner, setIsOpen, filters }) => {
       }
     })
   }
+
   if (isFiltered()) {
     return (
       <tr>
