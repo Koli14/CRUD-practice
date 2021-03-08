@@ -21,7 +21,12 @@ const PartnerRow = ({ partnerId, setSelectedPartner, setIsOpen, filters }) => {
   )
   const [deleteRequestStatus, setDeleteRequestStatus] = useState('idle')
 
-  const onDeleteClicked = async () => {
+  const onEdit = () => {
+    setSelectedPartner(partner)
+    setIsOpen(true)
+  }
+
+  const onDelete = async () => {
     if (deleteRequestStatus === 'idle') {
       try {
         setDeleteRequestStatus('pending')
@@ -62,10 +67,10 @@ const PartnerRow = ({ partnerId, setSelectedPartner, setIsOpen, filters }) => {
         <td>{partner.bankAccount}</td>
         <td>{partner.comment}</td>
         <td>
-          <button onClick={() => { setSelectedPartner(partner); setIsOpen(true) }}>Szerkesztés</button>
+          <button onClick={onEdit}>Szerkesztés</button>
         </td>
         <td>
-          <button onClick={onDeleteClicked} disabled={deleteRequestStatus !== 'idle'}>
+          <button onClick={onDelete} disabled={deleteRequestStatus !== 'idle'}>
             Törlés
           </button>
         </td>
@@ -85,6 +90,16 @@ const PartnerList = () => {
   const partnerIds = useSelector(selectPartnerIds)
   const partnerStatus = useSelector(state => state.partners.status)
   const error = useSelector((state) => state.partners.error)
+
+  const onNew = () => {
+    setSelectedPartner(emptyPartner)
+    setIsOpen(true)
+  }
+
+  const onDownload = (e) => {
+    e.preventDefault()
+    window.location.href = 'http://localhost:5000/api/admin/downloadPartners'
+  }
 
   useEffect(() => {
     if (partnerStatus === 'idle') {
@@ -130,20 +145,10 @@ const PartnerList = () => {
       <h2>Partnerek</h2>
       <div className='Header'>
         <div className='Buttons'>
-          <button
-            onClick={() => {
-              setSelectedPartner(emptyPartner)
-              setIsOpen(true)
-            }}
-          >
+          <button onClick={onNew}>
             Új Partner létrehozása
           </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault()
-              window.location.href = 'http://localhost:5000/api/admin/downloadPartners'
-            }}
-          >
+          <button onClick={onDownload}>
             Összes partner letöltése Excel-ben
           </button>
         </div>
