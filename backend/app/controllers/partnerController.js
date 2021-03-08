@@ -11,7 +11,7 @@ export const download = (req, res) => {
       partners.push({
         id: obj.id,
         name: obj.name,
-        companyTypeId: obj.CompanyType.name,
+        companyTypeId: obj.CompanyType?.name,
         taxNumber: obj.taxNumber,
         companyRegistrationNumber: obj.companyRegistrationNumber,
         settlementId: obj.Settlement.name,

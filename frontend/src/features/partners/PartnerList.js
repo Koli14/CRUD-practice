@@ -144,7 +144,7 @@ const PartnerList = () => {
               window.location.href = 'http://localhost:5000/api/admin/download'
             }}
           >
-            Partnerek letöltése Excel-ben
+            Összes partner letöltése Excel-ben
           </button>
         </div>
         <div className='SearchSection'>
